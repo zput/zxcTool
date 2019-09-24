@@ -1,9 +1,9 @@
-package zxcToolBasicController
+package ztBasicController
 
 import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"github.com/zput/zxcTool/zxcUtil"
+	"github.com/zput/zxcTool/ztUtil"
 	"net/http"
 	"strings"
 	"time"
@@ -48,7 +48,7 @@ func (this *Basic) ReturnSuccJson200(data interface{}) {
 func (this *Basic) ReturnSuccJson(httpStatus int, data interface{}) {
 	if httpStatus != http.StatusNoContent {
 		log.Tracef("Response: %+v", data)
-		log.Tracef("Response JSON: %+v", zxcUtil.FromStructToString(data))
+		log.Tracef("Response JSON: %+v", ztUtil.FromStructToString(data))
 	}
 	this.Ctx.AbortWithStatusJSON(httpStatus, data)
 	// print
@@ -70,7 +70,7 @@ func (this *Basic) ReturnFailErr(httpStatus int, msg ...string) {
 
 func (this *Basic) Panic(err error) {
 	httpStatus := http.StatusInternalServerError
-	if e, ok := err.(zxcUtil.ErrorInterface); ok {
+	if e, ok := err.(ztUtil.ErrorInterface); ok {
 		log.Debugf("API Failed: %+v", e)
 		httpStatus = e.Status()
 	} else {

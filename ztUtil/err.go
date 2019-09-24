@@ -1,4 +1,4 @@
-package zxcUtil
+package ztUtil
 
 import (
 	"encoding/json"

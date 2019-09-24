@@ -1,4 +1,4 @@
-package zxcToolLog
+package ztLog
 
 import (
 	"fmt"

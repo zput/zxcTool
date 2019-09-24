@@ -1,4 +1,4 @@
-package zxcToolReadConfig
+package ztReadConfig
 
 import (
 	"fmt"
