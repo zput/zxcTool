@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"zxcTool/zxcUtil"
+	"github.com/zput/zxcTool/zxcUtil"
 )
 
 type Basic struct{
