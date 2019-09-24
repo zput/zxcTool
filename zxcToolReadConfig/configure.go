@@ -12,9 +12,9 @@ var(
 	InnerConfig config.Configer
 )
 
-func init(){
-	ConfiguresInit("/online-compiler/goLanguage/configures/")
-}
+//func init(){
+//	ConfiguresInit("/online-compiler/goLanguage/configures/")
+//}
 
 // TestBeegoInit is for test package init
 func ConfiguresInit(ap string) {

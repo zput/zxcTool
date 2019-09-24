@@ -12,7 +12,7 @@ import (
 )
 
 type Basic struct{
-	ctx *gin.Context
+	Ctx *gin.Context
 	RequestBody []byte
 
 	url     string
@@ -23,15 +23,15 @@ type Basic struct{
 func (this *Basic) Prepare(){
 	var err error
 	this.begin = time.Now().UnixNano()
-	//this.XRealIp = this.ctx.GetHeader("X-Client-IP")
-	this.XRealIp = this.ctx.ClientIP()
+	//this.XRealIp = this.Ctx.GetHeader("X-Client-IP")
+	this.XRealIp = this.Ctx.ClientIP()
 
-	this.url = strings.TrimSpace(this.ctx.Request.URL.Path)
+	this.url = strings.TrimSpace(this.Ctx.Request.URL.Path)
 
-	log.Debugf("%s %s; enter", this.ctx.Request.Method, this.url)
+	log.Debugf("%s %s; enter", this.Ctx.Request.Method, this.url)
 
-	this.RequestBody, err = this.ctx.GetRawData()
-	this.handle(err)
+	this.RequestBody, err = this.Ctx.GetRawData()
+	this.Handle(err)
 	if len(this.RequestBody) > 0 {
 		log.Tracef("body: %s", string(this.RequestBody))
 	}
@@ -39,7 +39,7 @@ func (this *Basic) Prepare(){
 
 func (this *Basic) Finish() {
 	elapse := (time.Now().UnixNano() - this.begin) / 1000000000
-	log.Debugf("%s %s; go out, use %d msec", this.ctx.Request.Method, this.url, elapse)
+	log.Debugf("%s %s; go out, use %d msec", this.Ctx.Request.Method, this.url, elapse)
 }
 
 //successful
@@ -52,7 +52,7 @@ func (this *Basic) ReturnSuccJson(httpStatus int, data interface{}) {
 		log.Tracef("Response: %+v", data)
 		log.Tracef("Response JSON: %+v", zxcUtil.FromStructToString(data))
 	}
-	this.ctx.AbortWithStatusJSON(httpStatus, data)
+	this.Ctx.AbortWithStatusJSON(httpStatus, data)
 	// print
 	this.Finish()
 }
@@ -65,12 +65,12 @@ func (this *Basic) ReturnFailErr(httpStatus int, msg ...string) {
 	}
 	data := make(map[string]string)
 	data["message"] = tempMessage
-	this.ctx.AbortWithStatusJSON(httpStatus, data)
+	this.Ctx.AbortWithStatusJSON(httpStatus, data)
 	// print
 	this.Finish()
 }
 
-func (this *Basic) panic(err error) {
+func (this *Basic) Panic(err error) {
 	httpStatus := http.StatusInternalServerError
 	if e, ok := err.(ErrorInterface); ok {
 		log.Debugf("API Failed: %+v", e)
@@ -78,14 +78,14 @@ func (this *Basic) panic(err error) {
 	} else {
 		log.Tracef("INTERNAL ERROR: %+v", err)
 	}
-	this.ctx.AbortWithStatus(httpStatus)
+	this.Ctx.AbortWithStatus(httpStatus)
 	// print
 	this.Finish()
 }
 
-func (this *Basic) handle(err error) {
+func (this *Basic) Handle(err error) {
 	if err != nil {
-		this.panic(err)
+		this.Panic(err)
 		// TODO panic ?
 		panic(err)
 	}
