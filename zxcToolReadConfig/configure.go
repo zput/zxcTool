@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-var(
+var (
 	InnerConfig config.Configer
 )
 
@@ -43,4 +43,3 @@ func LoadAppConfig(adapterName, configPath string) error {
 	}
 	return nil
 }
-

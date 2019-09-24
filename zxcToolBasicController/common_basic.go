@@ -1,18 +1,16 @@
 package zxcToolBasicController
 
 import (
-	"encoding/json"
-	"fmt"
-	log "github.com/sirupsen/logrus"
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"github.com/zput/zxcTool/zxcUtil"
 	"net/http"
 	"strings"
 	"time"
-	"github.com/zput/zxcTool/zxcUtil"
 )
 
-type Basic struct{
-	Ctx *gin.Context
+type Basic struct {
+	Ctx         *gin.Context
 	RequestBody []byte
 
 	url     string
@@ -20,7 +18,7 @@ type Basic struct{
 	XRealIp string
 }
 
-func (this *Basic) Prepare(){
+func (this *Basic) Prepare() {
 	var err error
 	this.begin = time.Now().UnixNano()
 	//this.XRealIp = this.Ctx.GetHeader("X-Client-IP")
@@ -72,7 +70,7 @@ func (this *Basic) ReturnFailErr(httpStatus int, msg ...string) {
 
 func (this *Basic) Panic(err error) {
 	httpStatus := http.StatusInternalServerError
-	if e, ok := err.(ErrorInterface); ok {
+	if e, ok := err.(zxcUtil.ErrorInterface); ok {
 		log.Debugf("API Failed: %+v", e)
 		httpStatus = e.Status()
 	} else {
@@ -89,34 +87,4 @@ func (this *Basic) Handle(err error) {
 		// TODO panic ?
 		panic(err)
 	}
-}
-
-// interface
-type ErrorInterface interface {
-	Status() int
-}
-
-//struct
-type Error struct {
-	status  int    `json:"-"`
-	Code    *int   `json:"code,omitempty"`
-	Message string `json:"message"`
-}
-
-func (e Error) Error() string {
-	b, _ := json.Marshal(e)
-	return string(b)
-}
-
-func (e Error) Status() int {
-	return e.status
-}
-
-//new a above error
-func CodedErrorf(status int, code *int, format string, args ...interface{}) error {
-	return &Error{status: status, Code: code, Message: fmt.Sprintf(format, args...)}
-}
-
-func Errorf(status int, format string, args ...interface{}) error {
-	return &Error{status: status, Message: fmt.Sprintf(format, args...)}
 }

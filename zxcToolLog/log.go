@@ -10,8 +10,8 @@ import (
 	"runtime"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	nested "github.com/antonfisher/nested-logrus-formatter"
+	log "github.com/sirupsen/logrus"
 )
 
 var (
@@ -21,8 +21,8 @@ var (
 // WriterHook is a hook that writes logs of specified LogLevels to specified Writer
 type WriterHook struct {
 	LogNamePrefix string
-	Writer    io.Writer
-	LogLevels []log.Level
+	Writer        io.Writer
+	LogLevels     []log.Level
 }
 
 // Fire will be called when some logging function is called with current hook
@@ -34,7 +34,7 @@ func (hook *WriterHook) Fire(entry *log.Entry) error {
 	}
 
 	nowInterval := time.Now().Day()
-	if nowInterval != GlobalInterval{
+	if nowInterval != GlobalInterval {
 		GlobalInterval = nowInterval
 	}
 
@@ -58,40 +58,40 @@ func (hook *WriterHook) Levels() []log.Level {
 
 // setupLogs adds hooks to send logs to different destinations depending on level
 func SetupLogs(logNamePrefix, logFormatter string, logLevel int) {
-/*	err := logrus_mate.Hijack(
-		log.StandardLogger(),
-		logrus_mate.ConfigString(
-			`{formatter.name = "json"}`,
-		),
-	)
-	if err != nil{
-		panic(fmt.Sprintf("err:%s", err.Error()))
-	}*/
+	/*	err := logrus_mate.Hijack(
+			log.StandardLogger(),
+			logrus_mate.ConfigString(
+				`{formatter.name = "json"}`,
+			),
+		)
+		if err != nil{
+			panic(fmt.Sprintf("err:%s", err.Error()))
+		}*/
 
 	log.SetLevel(log.Level(logLevel - 1))
 
 	log.SetReportCaller(true)
 
 	switch logFormatter {
-	  case "NESTEDFormatter":
-	  		log.StandardLogger().Formatter = &nested.Formatter{
-	  			HideKeys:    true,
-	  			FieldsOrder: []string{"component", "category"},
-	  		}
-	  case "JSONFormatter":
-	  		log.StandardLogger().Formatter = &log.JSONFormatter{
-	  			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
-	  				filename := path.Base(f.File)
-	  				return fmt.Sprintf("%s()", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
-	  			},
-	  		}
+	case "NESTEDFormatter":
+		log.StandardLogger().Formatter = &nested.Formatter{
+			HideKeys:    true,
+			FieldsOrder: []string{"component", "category"},
+		}
+	case "JSONFormatter":
+		log.StandardLogger().Formatter = &log.JSONFormatter{
+			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+				filename := path.Base(f.File)
+				return fmt.Sprintf("%s()", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
+			},
+		}
 	}
 
 	log.SetOutput(ioutil.Discard) // Send all logs to nowhere by default
 
 	log.AddHook(&WriterHook{ // Send logs with level higher than warning to stderr
-		LogNamePrefix:logNamePrefix,
-		Writer: os.Stdout,
+		LogNamePrefix: logNamePrefix,
+		Writer:        os.Stdout,
 		LogLevels: []log.Level{
 			log.PanicLevel,
 			log.FatalLevel,
@@ -119,5 +119,5 @@ func LogInitialize(cfg config.Configer) {
 	logNamePrefix := cfg.String("log::log_name_prefix")
 	logFormatter := cfg.DefaultString("log::log_formatter", "NESTEDFormatter")
 	logLevel := cfg.DefaultInt("log::log_level", 7)
-	SetupLogs("../temp_log/" + logNamePrefix, logFormatter, logLevel)
+	SetupLogs("../temp_log/"+logNamePrefix, logFormatter, logLevel)
 }
