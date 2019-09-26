@@ -11,6 +11,7 @@ import (
 	"time"
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
+	"github.com/zput/zxcTool/ztLog/zt_formatter"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -74,9 +75,11 @@ func SetupLogs(logNamePrefix, logFormatter string, logLevel int) {
 
 	switch logFormatter {
 	case "NESTEDFormatter":
-		log.StandardLogger().Formatter = &nested.Formatter{
-			HideKeys:    true,
-			FieldsOrder: []string{"component", "category"},
+		log.StandardLogger().Formatter = &zt_formatter.ZtFormatter{
+			Formatter: nested.Formatter{
+				HideKeys: true,
+				FieldsOrder: []string{"component", "category"},
+			},
 		}
 	case "JSONFormatter":
 		log.StandardLogger().Formatter = &log.JSONFormatter{
