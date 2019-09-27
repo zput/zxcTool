@@ -11,8 +11,8 @@ import (
 	"time"
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
-	"github.com/zput/zxcTool/ztLog/zt_formatter"
 	log "github.com/sirupsen/logrus"
+	"github.com/zput/zxcTool/ztLog/zt_formatter"
 )
 
 var (
@@ -44,7 +44,8 @@ func (hook *WriterHook) Fire(entry *log.Entry) error {
 	if err == nil {
 		hook.Writer = file
 	} else {
-		log.Info("Failed to log to file, using default stderr")
+		hook.Writer = os.Stderr
+		hook.Writer.Write([]byte("Failed to log to file, using default stderr"))
 	}
 	defer file.Close()
 
@@ -81,7 +82,7 @@ func SetupLogs(logNamePrefix, logFormatter string, logLevel int) {
 				return fmt.Sprintf("%s()", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
 			},
 			Formatter: nested.Formatter{
-				HideKeys: true,
+				//HideKeys: true,
 				FieldsOrder: []string{"component", "category"},
 			},
 		}

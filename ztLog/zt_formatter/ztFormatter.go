@@ -27,6 +27,7 @@ type ZtFormatter struct{
 
 // rewrite Format an log entry by zxc
 func (f *ZtFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+
 	levelColor := getColorByLevel(entry.Level)
 
 	timestampFormat := f.TimestampFormat
@@ -36,6 +37,14 @@ func (f *ZtFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 
 	// output buffer
 	b := &bytes.Buffer{}
+
+	// add for zxc --------------- ---
+	fileVal, funcVal := f.writeEntry(entry)
+	if fileFooColor := getFileFooColorByLevel(entry.Level); fileFooColor == colorRed{
+		b.WriteString(fmt.Sprintf("\x1b[%dm[%s::%s]\x1b[0m ", fileFooColor, fileVal, funcVal))
+	}else{
+		b.WriteString(fmt.Sprintf("[%s::%s] ", fileVal, funcVal))
+	}
 
 	// write time
 	b.WriteString(entry.Time.Format(timestampFormat))
@@ -51,7 +60,7 @@ func (f *ZtFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	if f.ShowFullLevel {
 		b.WriteString(level)
 	} else {
-		b.WriteString(level[:4])
+		b.WriteString(level[:1])
 	}
 	b.WriteString("] ")
 
@@ -70,9 +79,6 @@ func (f *ZtFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		b.WriteString("\x1b[0m")
 	}
 
-	// add for zxc --------------- ---
-	f.writeEntry(entry)
-
 	// write message
 	if f.TrimMessages {
 		b.WriteString(strings.TrimSpace(entry.Message))
@@ -84,8 +90,40 @@ func (f *ZtFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
+func (f *ZtFormatter)writeEntry(entry *logrus.Entry)(fileVal, funcVal string){
+	if entry.HasCaller() {
+		funcVal = entry.Caller.Function
+		fileVal = fmt.Sprintf("%s:%d", entry.Caller.File, entry.Caller.Line)
+		// fmt.Println(funcVal, fileVal)
+		if f.CallerPrettyfier != nil {
+			funcVal, fileVal = f.CallerPrettyfier(entry.Caller)
+		}
+	}
+	return
+}
 
-func (f *ZtFormatter)writeEntry(entry *logrus.Entry) {
+/*func (f *ZtFormatter)writeEntry(entry *logrus.Entry)(tempEntry *logrus.Entry){
+	if entry.HasCaller() {
+		funcVal := entry.Caller.Function
+		fileVal := fmt.Sprintf("%s:%d", entry.Caller.File, entry.Caller.Line)
+		// fmt.Println(funcVal, fileVal)
+		if f.CallerPrettyfier != nil {
+			funcVal, fileVal = f.CallerPrettyfier(entry.Caller)
+		}
+		if funcVal != "" {
+			entry = entry.WithField(logrus.FieldKeyFunc, funcVal)
+			// TODO entry.Caller
+		}
+		if fileVal != "" {
+			entry = entry.WithField(logrus.FieldKeyFile, fileVal)
+			// TODO entry.Caller
+		}
+	}
+	tempEntry = entry
+    return
+}*/
+
+/*func (f *ZtFormatter)writeEntry(entry *logrus.Entry) {
 
 	if entry.HasCaller() {
 		funcVal := entry.Caller.Function
@@ -109,8 +147,7 @@ func (f *ZtFormatter)writeEntry(entry *logrus.Entry) {
 		}
 	}
 
-}
-
+}*/
 
 func (f *ZtFormatter) writeFields(b *bytes.Buffer, entry *logrus.Entry) {
 	if len(entry.Data) != 0 {
@@ -171,10 +208,17 @@ const (
 
 func getColorByLevel(level logrus.Level) int {
 	switch level {
-	case logrus.DebugLevel:
+	case logrus.DebugLevel, logrus.WarnLevel:
+		return colorBlue
+	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
+		return colorRed
+	default:
 		return colorGray
-	case logrus.WarnLevel:
-		return colorYellow
+	}
+}
+
+func getFileFooColorByLevel(level logrus.Level) int {
+	switch level {
 	case logrus.ErrorLevel, logrus.FatalLevel, logrus.PanicLevel:
 		return colorRed
 	default:
