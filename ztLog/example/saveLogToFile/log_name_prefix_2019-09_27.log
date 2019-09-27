@@ -1,0 +1,7 @@
+[main.go:27::main.printDemo()] Sep 27 20:04:24.140[37m [I] [0mthis is hello world demo
+[main.go:30::main.printDemo()] Sep 27 20:04:24.140[37m [I] [component:web-server] [0mstarting...
+[main.go:37::main.printDemo()] Sep 27 20:04:24.140[37m [I] [component:web-server] [req:GET /api/stats] [reqId:#1] [0mparams: startYear=2048
+[31m[main.go:38::main.printDemo()][0m Sep 27 20:04:24.141[31m [E] [component:web-server] [req:GET /api/stats] [reqId:#1] [0mresponse: 400 Bad Request
+[main.go:41::main.printDemo()] Sep 27 20:04:24.141[37m [I] [category:db-connector] [0mconnecting to db on 10.10.10.13...
+[main.go:42::main.printDemo()] Sep 27 20:04:24.141[36m [W] [category:db-connector] [0mconnection took 10s
+[main.go:44::main.printDemo()] Sep 27 20:04:24.141[37m [I] [0mdemo end.

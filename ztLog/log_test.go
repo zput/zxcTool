@@ -8,7 +8,7 @@ import (
 )
 
 func TestLog(t *testing.T){
-	ztLog.SetupLogs("./xxx/xxxx", "NESTEDFormatter", 7)
+	ztLog.SetupSTDLogs("./xxx/xxxx", "NESTEDFormatter", 7)
 
 	log.Info("hello")
 

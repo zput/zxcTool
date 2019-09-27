@@ -1,8 +1,8 @@
 package ztLog
 
 import (
-	"io"
 	"fmt"
+	"io"
 	"os"
 	"time"
 

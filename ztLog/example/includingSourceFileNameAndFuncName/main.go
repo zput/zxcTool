@@ -2,26 +2,32 @@ package main
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/zput/zxcTool/ztLog"
+	nested "github.com/antonfisher/nested-logrus-formatter"
+	"github.com/sirupsen/logrus"
+	"github.com/zput/zxcTool/ztLog/zt_formatter"
+	"path"
+	"runtime"
 )
 
 func main() {
-	ztLog.SetupLogs("./xxx.log", "NESTEDFormatter", 7)
-
-	log.Info("hello")
-	log.Debug("hello")
-	log.Trace("hello")
-	log.Errorf("hello")
-	log.Warnf("hello")
-
-	fmt.Println("--->>>")
+	var exampleFormatter = &zt_formatter.ZtFormatter{
+		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+			filename := path.Base(f.File)
+			return fmt.Sprintf("%s()", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
+		},
+		Formatter: nested.Formatter{
+			//HideKeys: true,
+			FieldsOrder: []string{"component", "category"},
+		},
+	}
+	printDemo(exampleFormatter, "hello world")
 }
-/*
+
 func printDemo(f logrus.Formatter, title string) {
 	l := logrus.New()
 
 	l.SetLevel(logrus.DebugLevel)
+	l.SetReportCaller(true)
 
 	if f != nil {
 		l.SetFormatter(f)
@@ -45,4 +51,4 @@ func printDemo(f logrus.Formatter, title string) {
 	lDbConnector.Warn("connection took 10s")
 
 	l.Info("demo end.")
-}*/
+}
