@@ -17,7 +17,7 @@ type ZtFormatter struct{
     // corresponding key will be removed from json fields.
     CallerPrettyfier CallBackFoo
 
-	formaterOperator FormaterOperatorInterface
+	FormaterOperator FormaterOperatorInterface
 }
 
 func(f *ZtFormatter)GetTimestampFormat()(string){
@@ -52,13 +52,13 @@ func (f *ZtFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	// output buffer
 	b := &bytes.Buffer{}
 
-	if f.formaterOperator == nil{
-		f.formaterOperator = new(DefaultFormaterrOperator)
+	if f.FormaterOperator == nil{
+		f.FormaterOperator = new(DefaultFormaterrOperator)
 	}
 
-	f.formaterOperator.WriteCommonInfo(f, b, entry)
-	f.formaterOperator.WriteField(f, b, entry)
-	f.formaterOperator.WriteMessages(f, b, entry)
+	f.FormaterOperator.WriteCommonInfo(f, b, entry)
+	f.FormaterOperator.WriteField(f, b, entry)
+	f.FormaterOperator.WriteMessages(f, b, entry)
 
 	b.WriteByte('\n')
 
