@@ -9,7 +9,7 @@ Human-readable log formatter:
 
 ## Charactor
 
-1. input error line
+1. print the name and line about file and the lastest function name while this log
 2. save log to file
 
 
@@ -92,8 +92,12 @@ func printDemo(f logrus.Formatter, title string) {
 
 
 
-## reference 
+## Reference 
+
 thanks [nested-logrus-formatter](https://github.com/antonfisher/nested-logrus-formatter)
+
+## Welcome PR
+
 
 <!---
 [![Build Status](https://travis-ci.org/antonfisher/nested-logrus-formatter.svg?branch=master)](https://travis-ci.org/antonfisher/nested-logrus-formatter)
