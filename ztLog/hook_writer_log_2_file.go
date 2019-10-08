@@ -11,6 +11,7 @@ import (
 
 // WriterToFileHook is a hook that writes logs of specified LogLevels to specified Writer
 type WriterToFileHook struct {
+	WhetherWriteToFile bool
 	LogNamePrefix string
 	Writer        io.Writer
 	LogLevels     []log.Level
@@ -21,6 +22,15 @@ type WriterToFileHook struct {
 func (hook *WriterToFileHook) Fire(entry *log.Entry) error {
 	line, err := entry.String()
 	if err != nil {
+		return err
+	}
+
+	if hook.WhetherWriteToFile == false{
+		// write to std
+		if hook.Writer == nil{
+			hook.Writer = os.Stdout
+		}
+		_, err = hook.Writer.Write([]byte(line))
 		return err
 	}
 
