@@ -28,6 +28,10 @@ func (this *Basic) Prepare() {
 
 	log.Debugf("%s %s; enter", this.Ctx.Request.Method, this.url)
 
+	if this.Ctx.Request.Body == nil {
+		log.Tracef("NO body")
+		return
+	}
 	this.RequestBody, err = this.Ctx.GetRawData()
 	this.Handle(err)
 	if len(this.RequestBody) > 0 {
