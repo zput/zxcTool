@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+var DefaultCatchPanicfoo = func(){  // Handle this.Handle's panic(error)
+	if e := recover(); e != nil {
+		log.Error(e)
+	}
+}
+
 type Basic struct {
 	Ctx         *gin.Context
 	RequestBody []byte
@@ -18,7 +24,11 @@ type Basic struct {
 	XRealIp string
 }
 
-func (this *Basic) Prepare() {
+func (this *Basic) Prepare(ctxSource ...*gin.Context) {
+	if len(ctxSource) != 0{
+		this.Ctx = ctxSource[0]
+	}
+
 	var err error
 	this.begin = time.Now().UnixNano()
 	//this.XRealIp = this.Ctx.GetHeader("X-Client-IP")
