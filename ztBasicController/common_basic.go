@@ -82,6 +82,20 @@ func (this *Basic) ReturnFailErr(httpStatus int, msg ...string) {
 	this.Finish()
 }
 
+//failure
+func (this *Basic) ReturnFailErrThroughError(err error) {
+	httpStatus := http.StatusInternalServerError
+	msg := ""
+	if e, ok := err.(ztUtil.ErrorInterface); ok {
+		log.Debugf("API Failed: %+v", e)
+		httpStatus = e.Status()
+		msg = e.Error()
+	} else {
+		log.Tracef("INTERNAL ERROR: %+v", err)
+	}
+	this.ReturnFailErr(httpStatus, msg)
+}
+
 func (this *Basic) Panic(err error) {
 	httpStatus := http.StatusInternalServerError
 	if e, ok := err.(ztUtil.ErrorInterface); ok {

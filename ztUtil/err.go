@@ -8,6 +8,7 @@ import (
 // interface
 type ErrorInterface interface {
 	Status() int
+	Error() string
 }
 
 //struct
