@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/zput/zxcTool/ztUtil"
 	"net/http"
+	"runtime/debug"
 	"strings"
 	"time"
 )
@@ -12,12 +13,14 @@ import (
 var DefaultCatchPanicfoo = func(){  // Handle this.Handle's panic(error)
 	if e := recover(); e != nil {
 		log.Error(e)
+		log.Debug(string(debug.Stack()))
 	}
 }
 
 var CatchPanicfooURI = func(uri string){  // Handle this.Handle's panic(error)
 	if e := recover(); e != nil {
 		log.Errorf("URI:%s; error:%+v", uri, e)
+		log.Debug(string(debug.Stack()))
 	}
 }
 
