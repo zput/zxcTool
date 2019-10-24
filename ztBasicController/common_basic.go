@@ -15,6 +15,12 @@ var DefaultCatchPanicfoo = func(){  // Handle this.Handle's panic(error)
 	}
 }
 
+var CatchPanicfooURI = func(uri string){  // Handle this.Handle's panic(error)
+	if e := recover(); e != nil {
+		log.Errorf("URI:%s; error:%+v", uri, e)
+	}
+}
+
 var CatchPanicfooReturn = func()interface{}{  // Handle this.Handle's panic(error)
 	if e := recover(); e != nil {
 		return e
