@@ -32,7 +32,7 @@ type Basic struct {
 	Ctx         *gin.Context
 	RequestBody []byte
 
-	url     string
+	URI     string
 	begin   int64
 	XRealIp string
 }
@@ -47,9 +47,9 @@ func (this *Basic) Prepare(ctxSource ...*gin.Context) {
 	//this.XRealIp = this.Ctx.GetHeader("X-Client-IP")
 	this.XRealIp = this.Ctx.ClientIP()
 
-	this.url = strings.TrimSpace(this.Ctx.Request.URL.Path)
+	this.URI = strings.TrimSpace(this.Ctx.Request.URL.Path)
 
-	log.Debugf("%s %s; enter", this.Ctx.Request.Method, this.url)
+	log.Debugf("%s %s; enter", this.Ctx.Request.Method, this.URI)
 
 	if this.Ctx.Request.Body == nil {
 		log.Tracef("NO body")
@@ -64,7 +64,7 @@ func (this *Basic) Prepare(ctxSource ...*gin.Context) {
 
 func (this *Basic) Finish() {
 	elapse := (time.Now().UnixNano() - this.begin) / 1000000000
-	log.Debugf("%s %s; go out, use %d msec", this.Ctx.Request.Method, this.url, elapse)
+	log.Debugf("%s %s; go out, use %d msec", this.Ctx.Request.Method, this.URI, elapse)
 }
 
 //successful
