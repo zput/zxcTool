@@ -15,6 +15,13 @@ var DefaultCatchPanicfoo = func(){  // Handle this.Handle's panic(error)
 	}
 }
 
+var CatchPanicfooReturn = func()interface{}{  // Handle this.Handle's panic(error)
+	if e := recover(); e != nil {
+		return e
+	}
+	return nil
+}
+
 type Basic struct {
 	Ctx         *gin.Context
 	RequestBody []byte
@@ -77,6 +84,7 @@ func (this *Basic) ReturnFailErr(httpStatus int, msg ...string) {
 	}
 	data := make(map[string]string)
 	data["message"] = tempMessage
+	log.Infof("Response: %+v", data)
 	this.Ctx.AbortWithStatusJSON(httpStatus, data)
 	// print
 	this.Finish()
