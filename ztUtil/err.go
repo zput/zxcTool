@@ -35,3 +35,8 @@ func CodedErrorf(status int, code *int, format string, args ...interface{}) erro
 func Errorf(status int, format string, args ...interface{}) error {
 	return &Error{status: status, Message: fmt.Sprintf(format, args...)}
 }
+
+//new a above error
+func CodedNoPtrErrorf(status int, code int, format string, args ...interface{}) error {
+	return &Error{status: status, Code: &code, Message: fmt.Sprintf(format, args...)}
+}
