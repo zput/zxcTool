@@ -21,7 +21,8 @@ func LogInitialize(cfg config.Configer) {
 	logFormatter := cfg.DefaultString("log::log_formatter", "NESTEDFormatter")
 	logLevel := cfg.DefaultInt("log::log_level", 7)
 	whetherWriteToFile := cfg.DefaultBool("log::log_whether_write_to_file", false)
-	SetupSTDLogs(whetherWriteToFile, "../temp_log/"+logNamePrefix, logFormatter, logLevel)
+	logFilePath := cfg.DefaultString("log::log_file_path", "../temp_log/")
+	SetupSTDLogs(whetherWriteToFile, logFilePath + logNamePrefix, logFormatter, logLevel)
 }
 
 // setupLogs adds hooks to send logs to different destinations depending on level
