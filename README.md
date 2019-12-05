@@ -88,6 +88,29 @@ func printDemo(f logrus.Formatter, title string) {
 }
 
 ```
+
+### use zxclog
+
+```
+	err = ztUtil.CodedNoPtrErrorf(errno.EN_InnerServer, errno.EN_InnerServer, "%v", err)
+	logs.Error(err)
+	return
+
+
+
+	if err != nil {
+		logs.Error("commonInfo:%s; PostSaleCenterUserActivity; error:%s", commonInfo, err.Error())
+		if errReal, ok := err.(*ztUtil.Error); ok {
+			util.OnError(this.Ctx, *errReal.Code, errReal.Message)
+			return
+		} else {
+			util.OnError(this.Ctx, errno.EN_InnerServer, errno.EM_InnerServer)
+			return
+		}
+	}
+```
+
+
 > more example please reference: /ztLog/example
 
 
