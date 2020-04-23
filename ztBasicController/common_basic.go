@@ -42,6 +42,8 @@ type Basic struct {
 	begin   int64
 	XRealIp string
 	handlers []Handler
+
+	Data interface{}
 }
 
 func (this *Basic) SetHandler(handler Handler) {
@@ -96,6 +98,7 @@ func (this *Basic) ReturnSuccJson(httpStatus int, data interface{}) {
 		log.Tracef("Response JSON: %+v", ztUtil.FromStructToString(data))
 	}
 	this.Ctx.AbortWithStatusJSON(httpStatus, data)
+	this.Data = data
 	// print
 	this.Finish()
 }
