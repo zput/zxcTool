@@ -31,18 +31,28 @@ var CatchPanicfooReturn = func()interface{}{  // Handle this.Handle's panic(erro
 	return nil
 }
 
+type Handler func(*Basic)
+
 type Basic struct {
 	Ctx         *gin.Context
 	RequestBody []byte
 
 	URI     string
+	Method string
 	begin   int64
 	XRealIp string
+	handlers []Handler
+}
+
+func (this *Basic) SetHandler(handler Handler) {
+	this.handlers = append(this.handlers, handler)
 }
 
 func (this *Basic) Prepare(ctxSource ...*gin.Context) {
 	if len(ctxSource) != 0{
 		this.Ctx = ctxSource[0]
+	}else{
+		return
 	}
 
 	var err error
@@ -51,6 +61,8 @@ func (this *Basic) Prepare(ctxSource ...*gin.Context) {
 	this.XRealIp = this.Ctx.ClientIP()
 
 	this.URI = strings.TrimSpace(this.Ctx.Request.URL.Path)
+
+	this.Method = strings.TrimSpace(this.Ctx.Request.Method)
 
 	log.Debugf("%s %s; enter", this.Ctx.Request.Method, this.URI)
 
@@ -67,7 +79,10 @@ func (this *Basic) Prepare(ctxSource ...*gin.Context) {
 
 func (this *Basic) Finish() {
 	elapse := (time.Now().UnixNano() - this.begin) / 1000000000
-	log.Debugf("%s %s; go out, use %d msec", this.Ctx.Request.Method, this.URI, elapse)
+	log.Debugf("%s %s; go out, use %d msec", this.Method, this.URI, elapse)
+	for index, _ := range this.handlers{
+		this.handlers[index](this)
+	}
 }
 
 //successful
