@@ -50,6 +50,10 @@ func (this *Basic) SetHandler(handler Handler) {
 	this.handlers = append(this.handlers, handler)
 }
 
+func (this *Basic) GetHandlerNumbers()int{
+	return len(this.handlers)
+}
+
 func (this *Basic) Prepare(ctxSource ...*gin.Context) {
 	if len(ctxSource) != 0{
 		this.Ctx = ctxSource[0]
