@@ -8,7 +8,7 @@ import (
 func TestMetadataSet(t *testing.T) {
 
 	var value = "val"
-	ctx := Set(context.TODO(), "Key", &value)
+	ctx := Set(context.TODO(), "Key", value)
 
 	val, ok := Get(ctx, "Key")
 	if !ok {

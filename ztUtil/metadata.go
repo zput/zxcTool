@@ -47,19 +47,22 @@ func Copy(md Metadata) Metadata {
 
 // Delete key from metadata
 func Delete(ctx context.Context, k string) context.Context {
-	return Set(ctx, k, nil)
+	return Set(ctx, k, "")
 }
 
 // Set add key with val to metadata
-func Set(ctx context.Context, k string, v *string) context.Context {
+func Set(ctx context.Context, k string, v string) context.Context {
 	md, ok := FromContext(ctx)
 	if !ok {
 		md = make(Metadata)
 	}
-	if v == nil {
+	if v == "" {
 		delete(md, k)
 	} else {
-		md[k] = v
+		if _, ok := md[k]; !ok{
+			 md[k] = new(string)
+		}
+		*md[k] = v
 	}
 	return context.WithValue(ctx, metadataKeyZT{}, md)
 }
