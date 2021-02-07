@@ -22,7 +22,7 @@ func (*DefaultFormaterrOperator)WriteCommonInfo(f FormatterZTInterface, bPtr *by
 
 	// add for zxc --------------- ---
 	fileVal, funcVal := f.WriteEntry(entry)
-	if fileFooColor := getFileFooColorByLevel(entry.Level); fileFooColor == colorRed{
+	if fileFooColor := getFileFooColorByLevel(entry.Level); fileFooColor == colorRed && !f.GetNoColors() {
 		bPtr.WriteString(fmt.Sprintf("\x1b[%dm[%s::%s]\x1b[0m ", fileFooColor, fileVal, funcVal))
 	}else{
 		bPtr.WriteString(fmt.Sprintf("[%s::%s] ", fileVal, funcVal))
