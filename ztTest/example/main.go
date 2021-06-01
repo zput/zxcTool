@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	if engine, err := example1(path, tablePrefix); err != nil {
+	if engine, err := example1(path, tablePrefix, "", ""); err != nil {
 		panic(err)
 	} else {
 		var name string
@@ -40,10 +40,12 @@ func main() {
 
 }
 
-func example1(path string, tablePrefix string) (engine *xorm.Engine, err error) {
+func example1(path string, tablePrefix, driveName, dataSourceName string) (engine *xorm.Engine, err error) {
 	var f ztTest.IFixtureServe
 	f, err = ztTest.New(ztTest.SetFixturePath(path),
-		ztTest.SetFixtureTablePrefix(tablePrefix))
+		ztTest.SetFixtureTablePrefix(tablePrefix),
+		ztTest.SetFixtureNameAboutDrivePlusDataSource(driveName, dataSourceName),
+	)
 	if err != nil {
 		return
 	}

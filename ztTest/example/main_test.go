@@ -18,7 +18,14 @@ func TestExample(t *testing.T) {
 		panic(err)
 	}
 
-	if engine, err := example1(path, tablePrefix); err != nil {
+	var (
+		// "mysql", "root@/taoge?charset=utf8"
+		// jdbc:mysql://47.113.200.44:3306/mysql
+		driveName      = "mysql"
+		dataSourceName = "root:longa1986@tcp(47.113.200.44:3306)/zxc"
+	)
+
+	if engine, err := example1(path, tablePrefix, driveName, dataSourceName); err != nil {
 		panic(err)
 	} else {
 		var name string

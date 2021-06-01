@@ -32,8 +32,14 @@ func NewFixture(o ...FixtureOption) (res *Fixture, err error) {
 			return
 		}
 	}
+	var sqlRelation = NewSqlRelation()
+	sqlRelation.TablePrefix = ret.tablePrefix
+	if len(ret.driveName) > 0 || len(ret.dataSourceName) > 0 {
+		sqlRelation.DriverName = ret.driveName
+		sqlRelation.DataSourceName = ret.dataSourceName
+	}
 
-	jiuWMySql, err := newFixture(ret.path, ret.tablePrefix)
+	jiuWMySql, err := newFixture(ret.path, sqlRelation)
 	if err != nil {
 		return
 	}
@@ -63,10 +69,20 @@ func SetFixtureTablePrefix(tablePrefix string) FixtureOption {
 	}
 }
 
+func SetFixtureNameAboutDrivePlusDataSource(driveName, dataSourceName string) FixtureOption {
+	return func(o *Fixture) (err error) {
+		o.driveName = driveName
+		o.dataSourceName = dataSourceName
+		return
+	}
+}
+
 type Fixture struct {
-	path        string // path in order to load YAML files from a given directory.
-	tablePrefix string
-	jiuWMySql   *fixture
+	path           string // path in order to load YAML files from a given directory.
+	tablePrefix    string
+	driveName      string
+	dataSourceName string
+	jiuWMySql      *fixture
 }
 
 func (f *Fixture) Sync(tables ...interface{}) error {
