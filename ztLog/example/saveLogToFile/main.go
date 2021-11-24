@@ -9,7 +9,7 @@ func main() {
 	logNamePrefix := "log_name_prefix"
 	logFormatter := "NESTEDFormatter"
 	logLevel := 7
-	ztLog.SetupSTDLogs("./"+logNamePrefix, logFormatter, logLevel)
+	ztLog.SetupSTDLogs(true, "./"+logNamePrefix, logFormatter, logLevel)
 
 	printDemo(logrus.StandardLogger(), nil, "hello world")
 }
