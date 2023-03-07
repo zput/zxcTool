@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-func TestLog(t *testing.T){
-	ztLog.SetupSTDLogs("./xxx/xxxx", "NESTEDFormatter", 7)
+func TestLog(t *testing.T) {
+	ztLog.SetupSTDLogs(false, "./xxx/xxxx", "NESTEDFormatter", 7)
 
 	log.Info("hello")
 

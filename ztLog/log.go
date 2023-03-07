@@ -22,10 +22,10 @@ func LogInitialize(cfg config.Configer) {
 	logLevel := cfg.DefaultInt("log::log_level", 7)
 	whetherWriteToFile := cfg.DefaultBool("log::log_whether_write_to_file", false)
 	logFilePath := cfg.DefaultString("log::log_file_path", "../temp_log/")
-	SetupSTDLogs(whetherWriteToFile, logFilePath + logNamePrefix, logFormatter, logLevel)
+	SetupSTDLogs(whetherWriteToFile, logFilePath+logNamePrefix, logFormatter, logLevel)
 }
 
-// setupLogs adds hooks to send logs to different destinations depending on level
+// SetupSTDLogs adds hooks to send logs to different destinations depending on level
 func SetupSTDLogs(whetherWriteToFile bool, logNamePrefix, logFormatter string, logLevel int) {
 	var choicedFormatter log.Formatter
 
@@ -42,7 +42,7 @@ func SetupSTDLogs(whetherWriteToFile bool, logNamePrefix, logFormatter string, l
 			},
 		}
 	case "JSONFormatter":
-		choicedFormatter  = &log.JSONFormatter{
+		choicedFormatter = &log.JSONFormatter{
 			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
 				filename := path.Base(f.File)
 				return fmt.Sprintf("%s()", f.Function), fmt.Sprintf("%s:%d", filename, f.Line)
@@ -53,17 +53,15 @@ func SetupSTDLogs(whetherWriteToFile bool, logNamePrefix, logFormatter string, l
 	SetupLogsCanExpand(log.StandardLogger(), choicedFormatter, whetherWriteToFile, logNamePrefix, logLevel)
 }
 
-
-
 func SetupLogsCanExpand(lPtr *log.Logger, f log.Formatter, whetherWriteToFile bool, logNamePrefix string, logLevel int) {
 	lPtr.SetLevel(log.Level(logLevel - 1))
 	lPtr.SetReportCaller(true)
 	lPtr.Formatter = f
-	lPtr.SetOutput(ioutil.Discard) // Send all logs to nowhere by default
+	lPtr.SetOutput(ioutil.Discard)  // Send all logs to nowhere by default
 	lPtr.AddHook(&WriterToFileHook{ // Send logs with level higher than warning to stderr
 		WhetherWriteToFile: whetherWriteToFile,
-		LogNamePrefix: logNamePrefix,
-		Writer:        os.Stdout,
+		LogNamePrefix:      logNamePrefix,
+		Writer:             os.Stdout,
 		LogLevels: []log.Level{
 			log.PanicLevel,
 			log.FatalLevel,
@@ -75,7 +73,6 @@ func SetupLogsCanExpand(lPtr *log.Logger, f log.Formatter, whetherWriteToFile bo
 		},
 	})
 }
-
 
 //func SetupLogs(logNamePrefix, logFormatter string, logLevel int) {
 //	/*	err := logrus_mate.Hijack(
@@ -130,7 +127,6 @@ func SetupLogsCanExpand(lPtr *log.Logger, f log.Formatter, whetherWriteToFile bo
 //	})
 //
 //}
-
 
 /*
 func main(){
